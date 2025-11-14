@@ -1,0 +1,57 @@
+{
+  "id": "multiLevelInstanceList",
+  "endPoints": [
+    {
+      "name": "supOrgWQL",
+      "baseUrlType": "workday-wql",
+      "url": "data",
+      "authType": "sso",
+      "wqlQuery": {
+        "queryId": "supervisoryOrganizations"
+      }
+    },
+    {
+      "deferred": true,
+      "name": "supOrgSearchWQL",
+      "baseUrlType": "workday-wql",
+      "url": "<% var query = 'SELECT supervisoryOrganization, name FROM supervisoryOrganizations WHERE name contains ' + '\"' + instanceListQuery + '\"';
+              console.info('query is ' + query);
+              return 'data?query=' + query.pathEncode() %>",
+      "authType": "sso"
+    }
+  ],
+  "presentation": {
+    "title": {
+      "type": "title",
+      "label": "Workday Extend"
+    },
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "multiSelect": "true",
+          "type": "instanceList",
+          "label": "Select orgs",
+          "id": "organizationSubordinatesList",
+          "values": "<% supOrgWQL.data %>",
+          "searchEndPoint": "<% endpoints.supOrgSearchWQL %>",
+          "searchResultValues": "<% supOrgSearchWQL.data %>",
+          "idKey": "supervisoryOrganization.id",
+          "displayKey": "name"
+        }
+      ]
+    },
+    "footer": {
+      "type": "footer",
+      "children": [
+        {
+          "type": "richText",
+          "enabled": "false",
+          "value": "Powered By Workday Extend"
+        }
+      ]
+    },
+    "pageType": "EDIT"
+  }
+}

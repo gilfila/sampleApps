@@ -1,0 +1,19 @@
+{
+  "id": "wqlsample_svfbfp",
+  "applicationId": "wqlsample_svfbfp",
+  "siteId": "wqlsample_svfbfp",
+  "languages": [
+    {
+      "code": "en-US",
+      "description": "English"
+    }
+  ],
+  "siteAuth": {
+    "authTypes": [
+      {
+        "scheme": "SSO",
+        "id": "sso"
+      }
+    ]
+  }
+}

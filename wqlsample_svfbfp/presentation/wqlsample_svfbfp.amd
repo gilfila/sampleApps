@@ -1,0 +1,53 @@
+{
+  "appProperties": [],
+  "tasks": [
+    {
+      "id": "home",
+      "routingPattern": "/",
+      "page": {
+        "id": "home"
+      }
+    },
+    {
+      "id": "directReportsView",
+      "routingPattern": "/directReportsView",
+      "page": {
+        "id": "directReportsView"
+      }
+    },
+    {
+      "id": "multiLevelInstanceList",
+      "routingPattern": "/multiLevelInstanceList",
+      "page": {
+        "id": "multiLevelInstanceList"
+      }
+    }
+  ],
+  "applicationId": "wqlsample_svfbfp",
+  "dataProviders": [
+    {
+      "key": "wdayRef",
+      "value": "<% apiGatewayEndpoint + '/referenceData' %>"
+    },
+    {
+      "key": "wdayCom",
+      "value": "<% apiGatewayEndpoint + '/common/v1' %>"
+    },
+    {
+      "key": "workday-wql",
+      "value": "<% apiGatewayEndpoint + '/wql/v1/' %>"
+    },
+    {
+      "key": "workday-staffing",
+      "value": "<% apiGatewayEndpoint + '/staffing/v4' %>"
+    },
+    {
+      "key": "workday-projects",
+      "value": "<% apiGatewayEndpoint + '/projects/v2Beta' %>"
+    },
+    {
+      "key": "workday-staffingv2",
+      "value": "<% apiGatewayEndpoint + '/staffing/v2' %>"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "id": "supervisoryOrganizations",
+  "query": "SELECT supervisoryOrganization, name
+FROM supervisoryOrganizations
+  "
+}

@@ -1,0 +1,4 @@
+{
+  "id": "getDirectReports",
+  "query": "SELECT legalName_FirstName, legalName_LastName, employeeID, workdayID FROM myDirectReports"
+}
