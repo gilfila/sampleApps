@@ -1,0 +1,94 @@
+{
+  "id": 1,
+  "name": "CustomerDigestInfo",
+  "label": "Customer Digest Info",
+  "defaultSecurityDomains": [
+    "CustomerDigestInfoSecurityDomain"
+  ],
+  "defaultCollection": {
+    "name": "customerDigestInfos",
+    "label": "Customer Digest Infos"
+  },
+  "fields": [
+    {
+      "enableSearch": false,
+      "enableIndex": false,
+      "isPurgeable": false,
+      "useForDisplay": false,
+      "isReferenceId": false,
+      "type": "TEXT",
+      "name": "customerName",
+      "id": 1
+    },
+    {
+      "enableSearch": false,
+      "enableIndex": false,
+      "isPurgeable": false,
+      "useForDisplay": false,
+      "isReferenceId": false,
+      "type": "TEXT",
+      "name": "customerContactFirstName",
+      "id": 2
+    },
+    {
+      "enableSearch": false,
+      "enableIndex": false,
+      "isPurgeable": false,
+      "useForDisplay": false,
+      "isReferenceId": false,
+      "type": "TEXT",
+      "name": "customerContactLastName",
+      "id": 3
+    },
+    {
+      "enableSearch": false,
+      "enableIndex": false,
+      "isPurgeable": false,
+      "useForDisplay": false,
+      "isReferenceId": false,
+      "type": "TEXT",
+      "name": "customerContactEmail",
+      "id": 4
+    },
+    {
+      "enableIndex": false,
+      "isPurgeable": false,
+      "type": "INTEGER",
+      "name": "emailWeeklyCadence",
+      "id": 5
+    },
+    {
+      "enableIndex": false,
+      "isPurgeable": false,
+      "type": "INTEGER",
+      "name": "emailDailyCadence",
+      "id": 6
+    },
+    {
+      "enableSearch": false,
+      "enableIndex": false,
+      "isPurgeable": false,
+      "useForDisplay": false,
+      "isReferenceId": false,
+      "type": "TEXT",
+      "name": "prompt",
+      "id": 7
+    },
+    {
+      "enableSearch": false,
+      "enableIndex": false,
+      "isPurgeable": false,
+      "useForDisplay": false,
+      "isReferenceId": false,
+      "type": "TEXT",
+      "name": "location",
+      "id": 8
+    },
+    {
+      "id": 9,
+      "name": "emailContent",
+      "type": "RICH_TEXT",
+      "isPurgeable": false
+    }
+  ]
+}

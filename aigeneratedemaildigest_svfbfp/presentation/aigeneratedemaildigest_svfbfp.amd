@@ -1,0 +1,20 @@
+{
+  "appProperties": [ ],
+  "tasks": [
+    {
+      "id": "EmailDigestManagement",
+      "routingPattern": "/",
+      "page": {
+        "id": "EmailDigestManagement"
+      }
+    },
+    {
+      "id": "customerDigestInfoView",
+      "routingPattern": "/customerDigestInfoView",
+      "page": {
+        "id": "customerDigestInfoView"
+      }
+    }
+  ],
+  "applicationId": "aigeneratedemaildigest_svfbfp"
+}

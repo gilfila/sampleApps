@@ -1,0 +1,24 @@
+{
+  "id": "getCustomerDigestInfos",
+  "query": "query getCustomerDigestInfos($limit: BigInt, $offset: BigInt) {
+  customerDigestInfos: aigeneratedemaildigest_svfbfp_CustomerDigestInfo(dataSource: {aigeneratedemaildigest_svfbfp_customerDigestInfos : {}}, limit: $limit, offset: $offset) {
+    data {
+      customerContactEmail
+      customerContactFirstName
+      customerContactLastName
+      customerName
+      descriptor
+      emailContent
+      emailDailyCadence
+      emailWeeklyCadence
+      location
+      prompt
+      workdayID {
+        id
+      }
+    }
+    total
+  }
+}
+"
+}

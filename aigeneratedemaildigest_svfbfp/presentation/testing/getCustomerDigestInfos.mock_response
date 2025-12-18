@@ -1,0 +1,43 @@
+{
+  "id": "getCustomerDigestInfos",
+  "responseCode": 200,
+  "responseBody": {
+    "data": {
+      "customerDigestInfos": {
+        "data": [
+          {
+            "customerContactEmail": "customerContactEmail",
+            "customerContactFirstName": "customerContactFirstName",
+            "customerContactLastName": "customerContactLastName",
+            "customerName": "customerName",
+            "descriptor": "descriptor-1fbea39a-7e8a-44ab-934c-04eb9ec223b6",
+            "emailContent": "emailContent",
+            "emailDailyCadence": 1,
+            "emailWeeklyCadence": 1,
+            "location": "location",
+            "prompt": "prompt",
+            "workdayID": {
+              "id": "id-4d84bee9-8989-4527-8f4b-0ca4c77f17ef"
+            }
+          },
+          {
+            "customerContactEmail": "customerContactEmail",
+            "customerContactFirstName": "customerContactFirstName",
+            "customerContactLastName": "customerContactLastName",
+            "customerName": "customerName",
+            "descriptor": "descriptor-becac7c4-b440-4db1-8bd0-5af1f5773a31",
+            "emailContent": "emailContent",
+            "emailDailyCadence": 1,
+            "emailWeeklyCadence": 1,
+            "location": "location",
+            "prompt": "prompt",
+            "workdayID": {
+              "id": "id-64d49430-fb10-4981-b57f-c3ff2547b3a5"
+            }
+          }
+        ],
+        "total": 1
+      }
+    }
+  }
+}

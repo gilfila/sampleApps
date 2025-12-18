@@ -1,0 +1,11 @@
+{
+  "mappings": [
+    {
+      "location": {
+        "endPointName": "getCustomerDigestInfos",
+        "pmdId": "customerDigestInfoView"
+      },
+      "mockId": "getCustomerDigestInfos"
+    }
+  ]
+}

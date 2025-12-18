@@ -1,0 +1,161 @@
+{
+  "id": "customerDigestInfoView",
+  "endPoints": [
+    {
+      "name": "getCustomerDigestInfos",
+      "graphQuery": {
+        "queryId": "getCustomerDigestInfos",
+        "variables": {
+          "limit": "<% empty pagingVariables.limit ? 100 : number:convertStringToInt(pagingVariables.limit) %>",
+          "offset": "<% empty pagingVariables.offset ? 0 : number:convertStringToInt(pagingVariables.offset) %>"
+        }
+      },
+      "httpMethod": "POST",
+      "authType": "sso",
+      "url": "https://api.workday.com/graphql/v1",
+      "failOnStatusCodes": [
+        {
+          "code": 400
+        },
+        {
+          "code": 429
+        }
+      ]
+    }
+  ],
+  "presentation": {
+    "title": {
+      "type": "title",
+      "label": "View Customer Digest Info"
+    },
+    "body": {
+      "type": "section",
+      "children": [
+        {
+          "type": "grid",
+          "id": "customerDigestInfoGrid",
+          "label": "Customer Digest Info",
+          "rows": "<% getCustomerDigestInfos.data.customerDigestInfos.data %>",
+          "rowVariableName": "customerDigestInfo",
+          "pagingInfo": {
+            "endPoint": "<% endpoints.getCustomerDigestInfos %>",
+            "rowCount": "<% getCustomerDigestInfos.data.customerDigestInfos.total %>",
+            "data": "<% getCustomerDigestInfos.data.customerDigestInfos.data %>"
+          },
+          "columns": [
+            {
+              "type": "column",
+              "columnId": "idColumn",
+              "label": "ID",
+              "cellTemplate": {
+                "type": "text",
+                "id": "id",
+                "value": "<% customerDigestInfo.workdayID?.id %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "customerNameColumn",
+              "label": "Customer Name",
+              "cellTemplate": {
+                "type": "text",
+                "id": "customerName",
+                "value": "<% customerDigestInfo.customerName %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "customerContactFirstNameColumn",
+              "label": "Customer Contact First Name",
+              "cellTemplate": {
+                "type": "text",
+                "id": "customerContactFirstName",
+                "value": "<% customerDigestInfo.customerContactFirstName %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "customerContactLastNameColumn",
+              "label": "Customer Contact Last Name",
+              "cellTemplate": {
+                "type": "text",
+                "id": "customerContactLastName",
+                "value": "<% customerDigestInfo.customerContactLastName %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "customerContactEmailColumn",
+              "label": "Customer Contact Email",
+              "cellTemplate": {
+                "type": "text",
+                "id": "customerContactEmail",
+                "value": "<% customerDigestInfo.customerContactEmail %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "emailDailyCadenceColumn",
+              "label": "Email Daily Cadence",
+              "cellTemplate": {
+                "type": "number",
+                "id": "emailDailyCadence",
+                "value": "<% customerDigestInfo.emailDailyCadence %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "emailWeeklyCadenceColumn",
+              "label": "Email Weekly Cadence",
+              "cellTemplate": {
+                "type": "number",
+                "id": "emailWeeklyCadence",
+                "value": "<% customerDigestInfo.emailWeeklyCadence %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "locationColumn",
+              "label": "Location",
+              "cellTemplate": {
+                "type": "text",
+                "id": "location",
+                "value": "<% customerDigestInfo.location %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "promptColumn",
+              "label": "Prompt",
+              "cellTemplate": {
+                "type": "text",
+                "id": "prompt",
+                "value": "<% customerDigestInfo.prompt %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "emailContentColumn",
+              "label": "Email Content",
+              "cellTemplate": {
+                "type": "text",
+                "id": "emailContent",
+                "value": "<% customerDigestInfo.emailContent %>"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "footer": {
+      "type": "footer",
+      "children": [
+        {
+          "type": "richText",
+          "enabled": "false",
+          "value": "<b>Generated by Workday Extend Developer Copilot.</b>"
+        }
+      ]
+    }
+  }
+}
