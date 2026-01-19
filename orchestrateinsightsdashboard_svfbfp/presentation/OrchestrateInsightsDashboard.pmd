@@ -1,0 +1,122 @@
+{
+  "id": "OrchestrateInsightsDashboard",
+  "endPoints": [
+    {
+      "authType": "sso",
+      "name": "getAllOrchs",
+      "url": "/AppOnlyOrchInsights/launch",
+      "baseUrlType": "workday-orchestration"
+    },
+    {
+      "authType": "sso",
+      "name": "getAllOrchs",
+      "url": "/AllOrchestrationsFromHack116/launch",
+      "baseUrlType": "workday-orchestration"
+    }
+  ],
+  "presentation": {
+    "title": {
+      "type": "title",
+      "label": "Workday Extend"
+    },
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "text",
+          "id": "hello",
+          "label": "Hello World!",
+          "value": "<% getAllOrchs %>"
+        },
+        {
+          "type": "text",
+          "value": "<% getAllOrchs.results %>"
+        },
+        {
+          "type": "grid",
+          "rows": "<% getAllOrchs.results %>",
+          "columns": [
+            {
+              "type": "column",
+              "label": "Orch Name",
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% orch.orchName %>"
+              },
+              "columnId": "AppIDColumn"
+            },
+            {
+              "type": "column",
+              "cellTemplate": {
+                "type": "text",
+                "label": "Running",
+                "value": "<% orch.summaryState.RUNNING %>"
+              },
+              "columnId": "Running",
+              "label": "Running"
+            },
+            {
+              "type": "column",
+              "columnId": "Successes",
+              "cellTemplate": {
+                "type": "text",
+                "label": "Success",
+                "value": "<% orch.summaryState.SUCCESS %>"
+              },
+              "label": "Success"
+            }
+          ],
+          "rowVariableName": "orch"
+        },
+        {
+          "type": "grid",
+          "rows": "<% getAllOrchs.results %>",
+          "columns": [
+            {
+              "type": "column",
+              "label": "Orch Name",
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% orch.orchName %>"
+              },
+              "columnId": "AppIDColumn"
+            },
+            {
+              "type": "column",
+              "cellTemplate": {
+                "type": "text",
+                "label": "Running",
+                "value": "<% orch.summaryState.RUNNING %>"
+              },
+              "columnId": "Running",
+              "label": "Running"
+            },
+            {
+              "type": "column",
+              "columnId": "Successes",
+              "cellTemplate": {
+                "type": "text",
+                "label": "Success",
+                "value": "<% orch.summaryState.SUCCESS %>"
+              },
+              "label": "Success"
+            }
+          ],
+          "rowVariableName": "orch"
+        }
+      ]
+    },
+    "footer": {
+      "type": "footer",
+      "children": [
+        {
+          "type": "richText",
+          "enabled": "false",
+          "value": "Powered By Workday Extend"
+        }
+      ]
+    },
+    "pageType": "VIEW"
+  }
+}

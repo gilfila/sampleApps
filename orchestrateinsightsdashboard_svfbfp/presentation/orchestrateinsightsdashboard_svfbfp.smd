@@ -1,0 +1,21 @@
+{
+  "id": "orchestrateinsightsdashboard_svfbfp",
+  "languages": [
+    {
+      "code": "en-US",
+      "description": "English"
+    }
+  ],
+  "siteAuth": {
+    "authTypes": [
+      {
+        "scheme": "SSO",
+        "id": "sso"
+      }
+    ]
+  },
+  "siteId": "orchestrateinsightsdashboard_svfbfp",
+  "cdnEnabled": true,
+  "siteProperties": [ ],
+  "applicationId": "orchestrateinsightsdashboard_svfbfp"
+}

@@ -1,0 +1,43 @@
+{
+  "appProperties": [ ],
+  "tasks": [
+    {
+      "id": "OrchestrateInsightsDashboard",
+      "routingPattern": "/",
+      "page": {
+        "id": "OrchestrateInsightsDashboard"
+      }
+    }
+  ],
+  "applicationId": "orchestrateinsightsdashboard_svfbfp",
+  "dataProviders": [
+    {
+      "key": "workday-staffing",
+      "value": "<% apiGatewayEndpoint + '/staffing/v1/' %>"
+    },
+    {
+      "key": "location",
+      "value": "<% apiGatewayEndpoint + '/person/v4/' %>"
+    },
+    {
+      "key": "app",
+      "value": "<% apiGatewayEndpoint + '/apps/' + site.applicationId + '/v1/' %>"
+    },
+    {
+      "key": "workday-bp",
+      "value": "<% apiGatewayEndpoint + '/businessProcess/v1/' %>"
+    },
+    {
+      "key": "workday-common",
+      "value": "<% apiGatewayEndpoint + '/common/v1/' %>"
+    },
+    {
+      "key": "workday-orchestration",
+      "value": "<% apiGatewayEndpoint + '/orchestrate/v1/apps/' + site.applicationId + '/orchestrations/' %>"
+    },
+    {
+      "key": "workday-wql",
+      "value": "<% apiGatewayEndpoint + '/wql/v1/' %>"
+    }
+  ]
+}
