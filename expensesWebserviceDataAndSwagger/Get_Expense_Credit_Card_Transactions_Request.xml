@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:wd="urn:com.workday/bsvc">
+  <soapenv:Header>
+    <!-- Optional: Add Workday authentication headers here -->
+    <!-- <wd:Workday_Common_Header>
+      <wd:Include_Reference_Descriptors_In_Response>true</wd:Include_Reference_Descriptors_In_Response>
+    </wd:Workday_Common_Header> -->
+  </soapenv:Header>
+  <soapenv:Body>
+    <wd:Get_Expense_Credit_Card_Transactions_Request wd:version="v46.0">
+      <!-- Optional: Specify Request_References to get specific transactions -->
+      <!-- <wd:Request_References>
+        <wd:Expense_Credit_Card_Transaction_Reference>
+          <wd:ID wd:type="Credit_Card_Transaction_ID">TRANSACTION_ID_HERE</wd:ID>
+        </wd:Expense_Credit_Card_Transaction_Reference>
+      </wd:Request_References> -->
+
+      <!-- Optional: Specify Request_Criteria to filter transactions -->
+      <!-- <wd:Request_Criteria>
+        <wd:Transaction_Date_Range_Filter>
+          <wd:From_Date>2024-01-01</wd:From_Date>
+          <wd:To_Date>2024-12-31</wd:To_Date>
+        </wd:Transaction_Date_Range_Filter>
+      </wd:Request_Criteria> -->
+
+      <!-- Optional: Response_Filter for pagination -->
+      <wd:Response_Filter>
+        <wd:Page>1</wd:Page>
+        <wd:Count>100</wd:Count>
+      </wd:Response_Filter>
+
+      <!-- Optional: Response_Group to specify what data to return -->
+      <wd:Response_Group>
+        <wd:Include_Reference>true</wd:Include_Reference>
+        <wd:Include_Transaction_Data>true</wd:Include_Transaction_Data>
+      </wd:Response_Group>
+    </wd:Get_Expense_Credit_Card_Transactions_Request>
+  </soapenv:Body>
+</soapenv:Envelope>

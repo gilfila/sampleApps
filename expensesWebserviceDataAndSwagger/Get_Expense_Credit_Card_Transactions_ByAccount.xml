@@ -1,0 +1,20 @@
+<bsvc:Get_Expense_Credit_Card_Transactions_Request xmlns:bsvc="urn:com.workday/bsvc">
+    <!--You have a CHOICE of the next 2 items at this level-->
+   
+    <!--Optional:-->
+    <bsvc:Request_Criteria>
+        <!--0 or more repetitions:-->
+        <bsvc:Corporate_Account_Reference>
+            <!--0 or more repetitions:-->
+            <bsvc:ID bsvc:type="WID">8c9f6c220943441f9e86e8fd8cc02c8c</bsvc:ID>
+        </bsvc:Corporate_Account_Reference>
+    </bsvc:Request_Criteria>
+    
+    <!--Optional:-->
+    <bsvc:Response_Group>
+        <!--Optional:-->
+        <bsvc:Include_Reference>true</bsvc:Include_Reference>
+        <!--Optional:-->
+        <bsvc:Include_Expense_Credit_Card_Transaction_Data>true</bsvc:Include_Expense_Credit_Card_Transaction_Data>
+    </bsvc:Response_Group>
+</bsvc:Get_Expense_Credit_Card_Transactions_Request>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:wd="urn:com.workday/bsvc">
+  <soapenv:Header>
+    <!-- Optional: Add Workday authentication headers here -->
+    <!-- <wd:Workday_Common_Header>
+      <wd:Include_Reference_Descriptors_In_Response>true</wd:Include_Reference_Descriptors_In_Response>
+    </wd:Workday_Common_Header> -->
+  </soapenv:Header>
+  <soapenv:Body>
+    <wd:Put_Expense_Credit_Card_Transactions_Request wd:version="v46.0" wd:Add_Only="false">
+      <!-- Optional: Reference to existing transaction for updates -->
+      <!-- <wd:Expense_Credit_Card_Transaction_Reference>
+        <wd:ID wd:type="Credit_Card_Transaction_ID">TRANSACTION_ID_HERE</wd:ID>
+      </wd:Expense_Credit_Card_Transaction_Reference> -->
+
+      <wd:Expense_Credit_Card_Transaction_Data>
+        <!-- Transaction Status: Set to Draft -->
+        <wd:Transaction_Status_Reference>
+          <wd:ID wd:type="Transaction_Status_ID">DRAFT</wd:ID>
+        </wd:Transaction_Status_Reference>
+
+        <!-- Credit Card Reference -->
+        <wd:Credit_Card_Reference>
+          <wd:ID wd:type="Credit_Card_ID">American_Express_Logan_McNeil_GMS_USA_Amex_Account_Corp</wd:ID>
+        </wd:Credit_Card_Reference>
+
+        <!-- Worker/Cardholder Reference -->
+        <wd:Worker_Reference>
+          <wd:ID wd:type="Employee_ID">21001</wd:ID>
+        </wd:Worker_Reference>
+
+        <!-- Transaction Date -->
+        <wd:Transaction_Date>2024-01-01</wd:Transaction_Date>
+
+        <!-- Merchant -->
+        <wd:Merchant>Merchant Name</wd:Merchant>
+
+        <!-- Transaction Amount -->
+        <wd:Transaction_Amount>100.00</wd:Transaction_Amount>
+
+        <!-- Currency Reference -->
+        <wd:Currency_Reference>
+          <wd:ID wd:type="Currency_ID">USD</wd:ID>
+        </wd:Currency_Reference>
+
+        <!-- Optional: Expense Item -->
+        <!-- <wd:Expense_Item_Data>
+          <wd:Expense_Item_Type_Reference>
+            <wd:ID wd:type="Expense_Item_Type_ID">EXPENSE_TYPE_ID</wd:ID>
+          </wd:Expense_Item_Type_Reference>
+          <wd:Item_Description>Description of expense</wd:Item_Description>
+          <wd:Extended_Amount>100.00</wd:Extended_Amount>
+        </wd:Expense_Item_Data> -->
+
+        <!-- Optional: Spend Category -->
+        <!-- <wd:Spend_Category_Reference>
+          <wd:ID wd:type="Spend_Category_ID">CATEGORY_ID_HERE</wd:ID>
+        </wd:Spend_Category_Reference> -->
+
+        <!-- Optional: Memo/Description -->
+        <wd:Memo>Transaction memo or description</wd:Memo>
+
+        <!-- Optional: Company Reference -->
+        <!-- <wd:Company_Reference>
+          <wd:ID wd:type="Company_Reference_ID">COMPANY_ID_HERE</wd:ID>
+        </wd:Company_Reference> -->
+
+        <!-- Optional: Cost Center -->
+        <!-- <wd:Cost_Center_Reference>
+          <wd:ID wd:type="Cost_Center_Reference_ID">COST_CENTER_ID_HERE</wd:ID>
+        </wd:Cost_Center_Reference> -->
+      </wd:Expense_Credit_Card_Transaction_Data>
+    </wd:Put_Expense_Credit_Card_Transactions_Request>
+  </soapenv:Body>
+</soapenv:Envelope>

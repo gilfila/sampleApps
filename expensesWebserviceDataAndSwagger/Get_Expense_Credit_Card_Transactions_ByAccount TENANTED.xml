@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:wd="urn:com.workday/bsvc">
+  <soapenv:Header>
+    <!-- Add your Workday authentication headers here -->
+  </soapenv:Header>
+  <soapenv:Body>
+    <wd:Get_Expense_Credit_Card_Transactions_Request wd:version="v46.0">
+      <wd:Request_Criteria>
+        <wd:Corporate_Account_Reference>
+          <wd:ID wd:type="WID">YOUR_COMPANY_ACCOUNT_WID_HERE</wd:ID>
+        </wd:Corporate_Account_Reference>
+      </wd:Request_Criteria>
+      <wd:Response_Filter>
+        <wd:Page>1</wd:Page>
+        <wd:Count>100</wd:Count>
+      </wd:Response_Filter>
+      <wd:Response_Group>
+        <wd:Include_Reference>true</wd:Include_Reference>
+        <wd:Include_Expense_Credit_Card_Transaction_Data>true</wd:Include_Expense_Credit_Card_Transaction_Data>
+      </wd:Response_Group>
+    </wd:Get_Expense_Credit_Card_Transactions_Request>
+  </soapenv:Body>
+</soapenv:Envelope>
