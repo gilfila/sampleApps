@@ -1,0 +1,966 @@
+openapi: 3.0.3
+info:
+  title: Hackathon App API
+  description: |
+    REST API for the Hackathon Application. Supports user authentication (with optional
+    MFA), ticket management, real-time chat (channels, DMs, ticket threads), Workday
+    ad-hoc sync for admin users, and MFA administration.
+
+    ## Authentication
+    All authenticated endpoints require a valid session cookie (`hackathon_session`).
+    Obtain a session by calling `POST /api/auth/login`. If the user has MFA enabled,
+    a two-step login flow is required (see MFA section).
+
+    ## Rate Limiting
+    All endpoints are rate-limited. Unauthenticated endpoints are limited per IP;
+    authenticated endpoints are limited per user. When rate-limited, the API returns
+    `429 Too Many Requests` with a `Retry-After` header.
+
+    ## Error Format
+    All errors follow a consistent JSON format:
+    ```json
+    {
+      "error": "error_code_or_message",
+      "message": "Human-readable description"
+    }
+    ```
+  version: 1.0.0
+  contact:
+    name: Hackathon App Team
+
+servers:
+  - url: http://localhost:5000/api
+    description: Development server
+  - url: https://hackathon.example.com/api
+    description: Production server
+
+tags:
+  - name: Auth
+    description: Authentication (login, register, session management)
+  - name: MFA
+    description: Multi-Factor Authentication enrollment and verification
+  - name: Chat
+    description: Chat channels, direct messages, and message operations
+  - name: Tickets
+    description: Support ticket management
+  - name: Workers
+    description: Worker/user profiles
+  - name: Admin - Sync
+    description: Workday ad-hoc sync administration
+  - name: Admin - MFA
+    description: MFA administration and enforcement
+
+paths:
+  # ──────────────────────────────────────────────
+  # AUTH
+  # ──────────────────────────────────────────────
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Login with email and password
+      description: |
+        Authenticates a user. If MFA is enabled for the user, returns an `mfa_token`
+        instead of a full session. The client must then call `/auth/mfa/verify-login`
+        with the token and a TOTP code to complete login.
+
+        If a valid `device_token` cookie is present (trusted device), MFA is skipped.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful (no MFA) or MFA required
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/LoginSuccess'
+                  - $ref: '#/components/schemas/MFARequired'
+        '401':
+          description: Invalid credentials
+        '429':
+          description: Rate limited (5 per minute per IP)
+
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password, name]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  minLength: 8
+                name:
+                  type: string
+      responses:
+        '201':
+          description: Registration successful
+        '400':
+          description: Validation error (weak password, duplicate email)
+        '429':
+          description: Rate limited (3 per minute per IP)
+
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: Logout and clear session
+      security:
+        - sessionCookie: []
+      responses:
+        '200':
+          description: Logged out
+
+  /auth/refresh:
+    post:
+      tags: [Auth]
+      summary: Refresh session to extend expiration
+      security:
+        - sessionCookie: []
+      responses:
+        '200':
+          description: Session refreshed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginSuccess'
+        '401':
+          description: Session expired
+
+  /auth/me:
+    get:
+      tags: [Auth]
+      summary: Get current authenticated user
+      security:
+        - sessionCookie: []
+      responses:
+        '200':
+          description: Current user info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Not authenticated
+
+  # ──────────────────────────────────────────────
+  # MFA
+  # ──────────────────────────────────────────────
+  /auth/mfa/enroll:
+    post:
+      tags: [MFA]
+      summary: Start MFA enrollment
+      description: Generates a TOTP secret and returns a QR code for the authenticator app.
+      security:
+        - sessionCookie: []
+      responses:
+        '200':
+          description: Enrollment started
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  qr_code:
+                    type: string
+                    description: Base64-encoded PNG of QR code
+                  manual_key:
+                    type: string
+                    description: TOTP secret for manual entry
+                  issuer:
+                    type: string
+                  account:
+                    type: string
+        '400':
+          description: MFA already enabled
+        '429':
+          description: Rate limited
+
+  /auth/mfa/verify-enrollment:
+    post:
+      tags: [MFA]
+      summary: Complete MFA enrollment with TOTP code
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [totp_code]
+              properties:
+                totp_code:
+                  type: string
+                  pattern: '^\d{6}$'
+      responses:
+        '200':
+          description: MFA enabled, backup codes returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  backup_codes:
+                    type: array
+                    items:
+                      type: string
+                  backup_codes_count:
+                    type: integer
+                  warning:
+                    type: string
+        '400':
+          description: Invalid TOTP code
+
+  /auth/mfa/verify-login:
+    post:
+      tags: [MFA]
+      summary: Verify TOTP code during login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [mfa_token]
+              properties:
+                mfa_token:
+                  type: string
+                totp_code:
+                  type: string
+                  pattern: '^\d{6}$'
+                backup_code:
+                  type: string
+                remember_device:
+                  type: boolean
+                  default: false
+      responses:
+        '200':
+          description: Login complete
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginSuccess'
+        '400':
+          description: Invalid TOTP or backup code
+        '401':
+          description: Expired mfa_token
+        '429':
+          description: Rate limited (5 per minute)
+
+  /auth/mfa/backup-codes:
+    post:
+      tags: [MFA]
+      summary: Regenerate backup codes
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [password]
+              properties:
+                password:
+                  type: string
+      responses:
+        '200':
+          description: New backup codes generated
+        '401':
+          description: Invalid password
+
+  /auth/mfa/disable:
+    delete:
+      tags: [MFA]
+      summary: Disable MFA for current user
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [password, totp_code]
+              properties:
+                password:
+                  type: string
+                totp_code:
+                  type: string
+      responses:
+        '200':
+          description: MFA disabled
+
+  # ──────────────────────────────────────────────
+  # CHAT
+  # ──────────────────────────────────────────────
+  /chats/channels:
+    get:
+      tags: [Chat]
+      summary: List all channels
+      security:
+        - sessionCookie: []
+      responses:
+        '200':
+          description: Channel list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  channels:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Channel'
+    post:
+      tags: [Chat]
+      summary: Create a new channel (admin only)
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+                  maxLength: 100
+                description:
+                  type: string
+      responses:
+        '201':
+          description: Channel created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Channel'
+        '403':
+          description: Admin role required
+
+  /chats/channels/{channelId}/join:
+    post:
+      tags: [Chat]
+      summary: Join a channel
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: channelId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Joined channel
+
+  /chats/direct-messages:
+    get:
+      tags: [Chat]
+      summary: List current user's DM conversations
+      security:
+        - sessionCookie: []
+      responses:
+        '200':
+          description: DM conversation list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  conversations:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DMConversation'
+    post:
+      tags: [Chat]
+      summary: Start or get existing DM conversation
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [recipient_id]
+              properties:
+                recipient_id:
+                  type: integer
+      responses:
+        '200':
+          description: DM conversation
+
+  /chats/{conversationId}/messages:
+    get:
+      tags: [Chat]
+      summary: Get paginated messages for a conversation
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: conversationId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: before
+          in: query
+          description: Message ID cursor for pagination (load older messages)
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          description: Messages per page (max 100)
+          schema:
+            type: integer
+            default: 50
+            maximum: 100
+      responses:
+        '200':
+          description: Message list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  messages:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Message'
+                  has_more:
+                    type: boolean
+
+  /chats/{conversationId}/mark-read:
+    post:
+      tags: [Chat]
+      summary: Mark messages as read
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: conversationId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [last_read_message_id]
+              properties:
+                last_read_message_id:
+                  type: integer
+      responses:
+        '200':
+          description: Read receipt saved
+
+  # ──────────────────────────────────────────────
+  # TICKETS
+  # ──────────────────────────────────────────────
+  /tickets:
+    get:
+      tags: [Tickets]
+      summary: List tickets
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [open, in_progress, resolved, closed]
+      responses:
+        '200':
+          description: Ticket list
+    post:
+      tags: [Tickets]
+      summary: Create a new ticket
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [description]
+              properties:
+                description:
+                  type: string
+                  maxLength: 5000
+                location_table:
+                  type: string
+                priority:
+                  type: string
+                  enum: [low, normal, high, urgent]
+                  default: normal
+      responses:
+        '201':
+          description: Ticket created
+        '429':
+          description: Rate limited (20 per hour per user)
+
+  # ──────────────────────────────────────────────
+  # WORKERS
+  # ──────────────────────────────────────────────
+  /workers:
+    get:
+      tags: [Workers]
+      summary: List workers
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: search
+          in: query
+          description: Search by name or email
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Worker list with staleness metadata
+
+  # ──────────────────────────────────────────────
+  # ADMIN - SYNC
+  # ──────────────────────────────────────────────
+  /admin/sync/user/{workday_id}:
+    post:
+      tags: [Admin - Sync]
+      summary: Sync a single user from Workday
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: workday_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Sync completed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  job_id:
+                    type: string
+                  status:
+                    type: string
+                  worker:
+                    $ref: '#/components/schemas/User'
+                  changed_fields:
+                    type: array
+                    items:
+                      type: string
+                  previous_values:
+                    type: object
+        '403':
+          description: Admin access required
+        '503':
+          description: Workday unavailable, cached data returned
+
+  /admin/sync/bulk:
+    post:
+      tags: [Admin - Sync]
+      summary: Trigger bulk sync of all users
+      security:
+        - sessionCookie: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                filter:
+                  type: object
+                  properties:
+                    team_name:
+                      type: string
+                    table:
+                      type: string
+                force:
+                  type: boolean
+                  default: false
+      responses:
+        '202':
+          description: Bulk sync started
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  job_id:
+                    type: string
+                  status:
+                    type: string
+                  total_workers:
+                    type: integer
+                  status_url:
+                    type: string
+        '403':
+          description: Admin access required
+        '429':
+          description: Bulk sync already in progress
+
+  /admin/sync/status/{job_id}:
+    get:
+      tags: [Admin - Sync]
+      summary: Check sync job status
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: job_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Job status with progress
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncJobStatus'
+        '404':
+          description: Job not found
+
+  /admin/sync/history:
+    get:
+      tags: [Admin - Sync]
+      summary: Get sync audit history
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 25
+        - name: trigger_type
+          in: query
+          schema:
+            type: string
+            enum: [manual, bulk, first_login, stale_login]
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [completed, failed, partial, running]
+        - name: since
+          in: query
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Paginated sync history
+
+  # ──────────────────────────────────────────────
+  # ADMIN - MFA
+  # ──────────────────────────────────────────────
+  /admin/mfa/reset/{user_id}:
+    post:
+      tags: [Admin - MFA]
+      summary: Reset MFA for a user (admin only)
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: MFA reset
+        '403':
+          description: Admin role required
+
+  /admin/mfa/status:
+    get:
+      tags: [Admin - MFA]
+      summary: Get MFA enrollment statistics
+      security:
+        - sessionCookie: []
+      responses:
+        '200':
+          description: MFA statistics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_users:
+                    type: integer
+                  mfa_enabled:
+                    type: integer
+                  mfa_disabled:
+                    type: integer
+                  enforcement:
+                    type: string
+                  recent_lockouts:
+                    type: integer
+                  trusted_devices:
+                    type: integer
+
+  /admin/mfa/enforcement:
+    put:
+      tags: [Admin - MFA]
+      summary: Set MFA enforcement policy
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [policy]
+              properties:
+                policy:
+                  type: string
+                  enum: [optional, required_for_admins, required_for_all]
+      responses:
+        '200':
+          description: Policy updated
+        '403':
+          description: Admin role required
+
+components:
+  securitySchemes:
+    sessionCookie:
+      type: apiKey
+      in: cookie
+      name: hackathon_session
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        name:
+          type: string
+        role:
+          type: string
+          enum: [hacker, expert, admin]
+        workday_id:
+          type: string
+        department:
+          type: string
+        table:
+          type: string
+        team_name:
+          type: string
+        is_stale:
+          type: boolean
+        last_synced_at:
+          type: string
+          format: date-time
+          nullable: true
+
+    LoginSuccess:
+      type: object
+      properties:
+        message:
+          type: string
+        user:
+          $ref: '#/components/schemas/User'
+
+    MFARequired:
+      type: object
+      properties:
+        mfa_required:
+          type: boolean
+          example: true
+        mfa_token:
+          type: string
+        mfa_token_expires:
+          type: integer
+          description: Seconds until mfa_token expires
+
+    Channel:
+      type: object
+      properties:
+        id:
+          type: string
+          example: channel_general
+        name:
+          type: string
+        description:
+          type: string
+        member_count:
+          type: integer
+        is_member:
+          type: boolean
+        unread_count:
+          type: integer
+        last_message:
+          $ref: '#/components/schemas/MessagePreview'
+
+    DMConversation:
+      type: object
+      properties:
+        id:
+          type: string
+          example: dm_3_7
+        type:
+          type: string
+          enum: [direct]
+        other_user:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+            email:
+              type: string
+        unread_count:
+          type: integer
+        last_message:
+          $ref: '#/components/schemas/MessagePreview'
+
+    Message:
+      type: object
+      properties:
+        id:
+          type: integer
+        sender:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+            email:
+              type: string
+        content:
+          type: string
+        conversation_id:
+          type: string
+        mentions:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+        timestamp:
+          type: string
+          format: date-time
+
+    MessagePreview:
+      type: object
+      properties:
+        content:
+          type: string
+        sender_name:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+
+    SyncJobStatus:
+      type: object
+      properties:
+        job_id:
+          type: string
+        status:
+          type: string
+          enum: [pending, running, completed, failed, partial]
+        trigger_type:
+          type: string
+        initiated_by:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+        started_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: string
+          format: date-time
+          nullable: true
+        progress:
+          type: object
+          properties:
+            total:
+              type: integer
+            completed:
+              type: integer
+            succeeded:
+              type: integer
+            failed:
+              type: integer
+            skipped:
+              type: integer
+            percent_complete:
+              type: integer
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              workday_id:
+                type: string
+              error:
+                type: string

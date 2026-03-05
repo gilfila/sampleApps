@@ -1,0 +1,85 @@
+{
+  "id": "ApplicationInsightsDashboard",
+  "endPoints": [
+    {
+      "authType": "sso",
+      "name": "getApplications",
+      "url": "/GetApplications/launch",
+      "baseUrlType": "workday-orchestration"
+    },
+    {
+      "authType": "sso",
+      "name": "getChartData1",
+      "url": "/GetApplicationChartData1/launch",
+      "baseUrlType": "workday-orchestration"
+    },
+    {
+      "authType": "sso",
+      "name": "getChartData2",
+      "url": "/GetApplicationChartData2/launch",
+      "baseUrlType": "workday-orchestration"
+    }
+  ],
+  "presentation": {
+    "title": {
+      "type": "title",
+      "label": "Application Insights Dashboard"
+    },
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "select",
+          "id": "applicationSelect",
+          "label": "Select Application",
+          "options": "<% getApplications.results %>",
+          "optionLabel": "<% app.name %>",
+          "optionValue": "<% app.id %>",
+          "value": "<% selectedApplicationId %>",
+          "onChange": {
+            "action": "refresh",
+            "endpoints": ["getChartData1", "getChartData2"]
+          }
+        },
+        {
+          "type": "section",
+          "horizontal": true,
+          "children": [
+            {
+              "type": "chart",
+              "id": "chart1",
+              "label": "Application Performance Metrics",
+              "data": "<% getChartData1.results %>",
+              "chartType": "line",
+              "xAxisField": "date",
+              "yAxisField": "value",
+              "visible": "<% selectedApplicationId != null && getChartData1.results != null %>"
+            },
+            {
+              "type": "chart",
+              "id": "chart2",
+              "label": "Application Usage Statistics",
+              "data": "<% getChartData2.results %>",
+              "chartType": "bar",
+              "xAxisField": "category",
+              "yAxisField": "count",
+              "visible": "<% selectedApplicationId != null && getChartData2.results != null %>"
+            }
+          ]
+        }
+      ]
+    },
+    "footer": {
+      "type": "footer",
+      "children": [
+        {
+          "type": "richText",
+          "enabled": "false",
+          "value": "Powered By Workday Extend"
+        }
+      ]
+    },
+    "pageType": "VIEW"
+  }
+}

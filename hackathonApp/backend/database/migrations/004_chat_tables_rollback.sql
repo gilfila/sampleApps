@@ -1,0 +1,5 @@
+DROP TABLE IF EXISTS message_mentions CASCADE;
+DROP TABLE IF EXISTS read_receipts CASCADE;
+DROP TABLE IF EXISTS channel_memberships CASCADE;
+DROP TABLE IF EXISTS channels CASCADE;
+ALTER TABLE chat_messages DROP COLUMN IF EXISTS conversation_id;

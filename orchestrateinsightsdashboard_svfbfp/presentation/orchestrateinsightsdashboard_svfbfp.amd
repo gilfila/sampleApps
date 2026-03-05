@@ -7,6 +7,20 @@
       "page": {
         "id": "OrchestrateInsightsDashboard"
       }
+    },
+    {
+      "id": "ApplicationInsightsDashboard",
+      "routingPattern": "/applications",
+      "page": {
+        "id": "ApplicationInsightsDashboard"
+      }
+    },
+    {
+      "id": "StockInfosDashboard",
+      "routingPattern": "/stock-infos",
+      "page": {
+        "id": "StockInfosDashboard"
+      }
     }
   ],
   "applicationId": "orchestrateinsightsdashboard_svfbfp",

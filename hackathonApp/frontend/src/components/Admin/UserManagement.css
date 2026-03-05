@@ -1,0 +1,107 @@
+.user-mgmt-subtitle {
+  color: #6c757d;
+  margin-bottom: 1rem;
+}
+
+.user-mgmt-msg {
+  margin-bottom: 12px;
+}
+
+.user-mgmt-card {
+  margin-bottom: 24px;
+}
+
+.user-mgmt-card h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.user-mgmt-add-form .form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-end;
+}
+
+.user-mgmt-add-form .form-group {
+  margin-bottom: 0;
+  min-width: 140px;
+  flex: 1;
+}
+
+.user-mgmt-add-form .form-group-actions {
+  flex: 0 0 auto;
+  min-width: auto;
+}
+
+.user-mgmt-search {
+  max-width: 320px;
+  margin-bottom: 1rem;
+}
+
+.user-mgmt-search input {
+  width: 100%;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.user-mgmt-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.user-mgmt-table th,
+.user-mgmt-table td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.user-mgmt-table th {
+  font-weight: 600;
+  background: #f8f9fa;
+}
+
+.user-mgmt-table .email-cell {
+  font-family: inherit;
+}
+
+.user-mgmt-table .inline-edit {
+  width: 100%;
+  max-width: 200px;
+  padding: 6px 8px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.user-mgmt-table .editable {
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.user-mgmt-table .editable:hover {
+  background: #e9ecef;
+}
+
+.user-mgmt-table .btn-sm {
+  padding: 6px 12px;
+  font-size: 13px;
+  margin-right: 6px;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.pagination-info {
+  font-size: 14px;
+  color: #6c757d;
+}

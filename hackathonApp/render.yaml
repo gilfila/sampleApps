@@ -1,0 +1,42 @@
+# Backend runs with FLASK_ENV=production; config.ProductionConfig normalizes
+# DATABASE_URL (postgres:// -> postgresql://) for SQLAlchemy. Local: use ./start-local.sh (sets FLASK_ENV=development).
+services:
+  - type: web
+    name: hackathon-app
+    env: python
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: cd backend && python run.py
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: hackathon-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WORKDAY_TENANT
+        sync: false
+      - key: WORKDAY_CLIENT_ID
+        sync: false
+      - key: WORKDAY_CLIENT_SECRET
+        sync: false
+      - key: WORKDAY_REFRESH_TOKEN
+        sync: false
+      - key: WORKDAY_CUSTOM_OBJECT_NAME
+        sync: false
+      - key: WORKDAY_TICKET_CUSTOM_OBJECT_NAME
+        sync: false
+      - key: WORKDAY_SYNC_INTERVAL
+        value: 3600
+      - key: WORKDAY_TICKET_SYNC_INTERVAL
+        value: 300
+      - key: WORKDAY_TICKET_SYNC_RETRY_ATTEMPTS
+        value: 3
+      - key: SOCKETIO_CORS_ORIGINS
+        value: "*"
+
+databases:
+  - name: hackathon-db
+    databaseName: hackathon_app
+    user: hackathon_user

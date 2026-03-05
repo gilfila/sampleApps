@@ -1,0 +1,50 @@
+---
+description: Read README first for context; update README and APP-FLOW-E2E when changing setup, maintenance, or features
+alwaysApply: true
+---
+
+# README and project context
+
+When working on this app, follow these rules so AI-assisted work stays aligned with how the app is designed and the docs stay accurate.
+
+## 1. Read the README first
+
+Before making changes or answering questions about this codebase:
+
+- Read the project **README** (and any linked setup/maintenance docs such as **SETUP.md**) to understand how the app is supposed to operate, its architecture, and current setup/maintenance instructions.
+- Use that context to stay aligned with how the app is designed to work.
+
+## 2. Update the README when relevant
+
+When adding or changing any of the following:
+
+- Setup steps
+- Environment variables
+- Deployment flow
+- Maintenance procedures
+
+**Update the README** (and related docs like **SETUP.md**) with the new information so users have accurate, up-to-date guidance for setup and maintenance. Do not leave the README or setup docs outdated after such changes.
+
+## 3. Update APP-FLOW-E2E.md for new or enhanced features
+
+Whenever you **add or enhance** any of the following, **update APP-FLOW-E2E.md** with relevant steps for testing and validation:
+
+- New user-facing flows (e.g. new pages, wizards, or journeys)
+- New or changed API endpoints (REST or WebSocket)
+- New or changed auth/session behavior
+- New or changed MFA, ticketing, chat, workers, admin, or settings behavior
+- New routes or entry points
+
+**How to update APP-FLOW-E2E.md:**
+
+- **User-centric only**: Every step describes what the **end user** does in the app (navigate, click, type, select) and what they **see** as a result. Do not write steps that assume the user calls backend services or APIs directly.
+- **New major feature area** → Add a new major-version section (e.g. **8.0 New Feature**) with a brief intro. Use the next available major version number.
+- **New sub-feature or user journey within an existing area** → Add a new minor-version subsection (e.g. **3.7 New flow**) under the appropriate major section.
+- **New or changed steps** → Add rows to the relevant subsection table using this format:
+  - **Verified**: `[ ]` (leave unchecked until manually verified).
+  - **Step**: Lettered step within the subsection (e.g. **7.2.a**, **7.2.b**)—use the next letter in that subsection.
+  - **User action**: What the user does in the UI (e.g. “User navigates to Admin dashboard”, “User selects Workday config and saves”).
+  - **Expected result (what user sees)**: The UI outcome (e.g. page loads, form appears, success message, error message, list updates).
+- **New routes or UI entry points** → Update the **Quick reference: routes and entry points** table and, if needed, **Notes for test automation** at the bottom of the file.
+
+Keep the document’s existing conventions: major version = feature area, minor version = sub-feature; lettered steps (e.g. 1.1.a, 7.2.b); tables with columns Verified | Step | User action | Expected result (what user sees). Do not leave APP-FLOW-E2E.md outdated when adding or enhancing functionality.

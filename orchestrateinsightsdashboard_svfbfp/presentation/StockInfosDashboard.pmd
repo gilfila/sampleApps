@@ -1,0 +1,108 @@
+{
+  "id": "StockInfosDashboard",
+  "endPoints": [
+    {
+      "authType": "sso",
+      "name": "getAllStockInfos",
+      "url": "/GetAllStockInfos/launch",
+      "baseUrlType": "workday-orchestration"
+    }
+  ],
+  "presentation": {
+    "title": {
+      "type": "title",
+      "label": "Stock Information Dashboard"
+    },
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "text",
+          "id": "recordCount",
+          "label": "Total Records",
+          "value": "<% (getAllStockInfos.data != null ? getAllStockInfos.data.length : (getAllStockInfos.records != null ? getAllStockInfos.records.length : 0)) %>"
+        },
+        {
+          "type": "grid",
+          "rows": "<% getAllStockInfos.data != null ? getAllStockInfos.data : (getAllStockInfos.records != null ? getAllStockInfos.records : []) %>",
+          "columns": [
+            {
+              "type": "column",
+              "label": "ID",
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% stock.id %>"
+              },
+              "columnId": "id"
+            },
+            {
+              "type": "column",
+              "label": "Stock Symbol",
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% stock.symbol %>"
+              },
+              "columnId": "symbol"
+            },
+            {
+              "type": "column",
+              "label": "Stock Name",
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% stock.name %>"
+              },
+              "columnId": "name"
+            },
+            {
+              "type": "column",
+              "label": "Price",
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% stock.price %>"
+              },
+              "columnId": "price"
+            },
+            {
+              "type": "column",
+              "label": "Quantity",
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% stock.quantity %>"
+              },
+              "columnId": "quantity"
+            },
+            {
+              "type": "column",
+              "label": "Last Updated",
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% stock.lastUpdated %>"
+              },
+              "columnId": "lastUpdated"
+            }
+          ],
+          "rowVariableName": "stock"
+        },
+        {
+          "type": "text",
+          "id": "rawData",
+          "label": "Raw Response (for debugging)",
+          "value": "<% getAllStockInfos %>",
+          "visible": false
+        }
+      ]
+    },
+    "footer": {
+      "type": "footer",
+      "children": [
+        {
+          "type": "richText",
+          "enabled": "false",
+          "value": "Powered By Workday Extend"
+        }
+      ]
+    },
+    "pageType": "VIEW"
+  }
+}

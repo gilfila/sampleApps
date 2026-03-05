@@ -1,0 +1,25 @@
+.ticket-details {
+  margin-bottom: 20px;
+}
+
+.ticket-details p {
+  margin-bottom: 10px;
+}
+
+.ticket-description {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #ddd;
+}
+
+.ticket-actions {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #ddd;
+}
+
+.ticket-actions select {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}

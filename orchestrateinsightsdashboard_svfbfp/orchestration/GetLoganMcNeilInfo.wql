@@ -1,0 +1,9 @@
+SELECT 
+  Worker.Supervisory_Organization,
+  Worker.Pay_Group,
+  Worker.Hire_Date
+FROM 
+  Worker
+WHERE 
+  Worker.First_Name = "Logan" AND Worker.Last_Name = "McNeil"
+

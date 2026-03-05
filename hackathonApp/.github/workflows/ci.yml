@@ -1,0 +1,59 @@
+name: CI/CD Pipeline
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          cd backend
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+
+      - name: Run migrations
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
+        run: python backend/database/run_migrations.py
+
+      - name: Run backend tests
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
+          SECRET_KEY: test-secret-key-for-ci
+          FLASK_ENV: testing
+        run: cd backend && pytest
+
+      - name: Security scan
+        run: |
+          pip install bandit safety
+          bandit -r backend/app
+          safety check -r backend/requirements.txt
+
+      - name: Upload coverage
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
+          SECRET_KEY: test-secret-key-for-ci
+          FLASK_ENV: testing
+        run: cd backend && pytest --cov-report=xml
