@@ -30,6 +30,7 @@ instance/
 # Environment variables
 .env
 .env.local
+.env.bak
 
 # Workday MCP PKCE verifier (ephemeral)
 workday_mcp_server/.workday_pkce_verifier
