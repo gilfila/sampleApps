@@ -1,0 +1,5 @@
+notebooklm-py[browser]>=0.3.4
+feedparser>=6.0.11
+httpx>=0.27.0
+python-dotenv>=1.0.1
+rich>=13.9.0
