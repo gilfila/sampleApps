@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+.DS_Store
+# Graphify scratch/enrichment caches (graph.json/graph.html/GRAPH_REPORT.md are committed)
+graphify-out/*.svg
+graphify-out/wiki/
+.graphify_docs_*/

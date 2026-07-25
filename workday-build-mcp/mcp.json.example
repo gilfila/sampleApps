@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "workday-build": {
+      "command": "/absolute/path/to/workday-build-mcp/.venv/bin/python",
+      "args": ["-m", "workday_build_mcp.server"],
+      "env": {
+        "WORKDAY_BUILD_REPO": "/absolute/path/to/workdayBuildAgent",
+        "WORKDAY_BUILD_DOCS": "/absolute/path/to/Documentation and Forum Content",
+        "WORKDAY_BUILD_OUTPUT": "/absolute/path/to/where/apps/are/created"
+      }
+    }
+  }
+}

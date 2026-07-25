@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "workday-build-mcp"
+version = "0.1.0"
+description = "One-stop-shop MCP for the Workday Build platform: graph-backed docs/sample lookup + Extend/agent/orchestration scaffolding."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = [
+    "mcp>=1.2.0",
+]
+
+[project.optional-dependencies]
+# Optional Graphify CLI enrichment for the docs corpus. Not required — the
+# custom Workday extractors emit a Graphify-compatible graph on their own.
+graphify = ["graphifyy"]
+
+[project.scripts]
+workday-build-mcp = "workday_build_mcp.server:main"
+workday-build-graph = "workday_build_mcp.graph.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+workday_build_mcp = ["py.typed"]
